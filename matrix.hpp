@@ -18,8 +18,7 @@ public:
 
     Tp &operator() (int i, int j)
     {
-        assert(i >= 0 && i < rows);
-        assert(j >= 0 && j < cols);
+        assert(i >= 0 && i < rows && j >= 0 && j < cols);
         return data[cols * i + j];
     }
 
