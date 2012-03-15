@@ -29,6 +29,10 @@ void GameField::Reset()
     for (int i = 0; i < Rows(); ++i)
         for (int j = 0; j < Cols(); ++j)
             matrix(i,j) = CHIP_NONE;
+
+    int r = Rows()/2, c = Cols()/2;
+    matrix(r,c) = matrix(r-1,c-1) = CHIP_WHITE;
+    matrix(r-1,c) = matrix(r,c-1) = CHIP_BLACK;
 }
 
 void GameField::Draw(SDL_Surface *screen)

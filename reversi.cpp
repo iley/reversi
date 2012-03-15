@@ -70,11 +70,15 @@ void Window::Update()
 
 bool moveCallback(int row, int col)
 {
-    field.matrix(row,col) = players[currentPlayer]->Color();
-    window.Update();
-    currentPlayer = 1 - currentPlayer;
-    players[currentPlayer]->Move(field, moveCallback);
-    return true;
+    if (field.matrix(row, col) == CHIP_NONE) {
+        field.matrix(row,col) = players[currentPlayer]->Color();
+        window.Update();
+        currentPlayer = 1 - currentPlayer;
+        players[currentPlayer]->Move(field, moveCallback);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool keyPressed(const SDL_Event &event, int key)
@@ -104,10 +108,6 @@ int main()
     bool quit = false;
 
     init();
-
-    for (int i = 0; i < field.Rows(); ++i)
-        for (int j = 0; j < field.Cols(); ++j)
-            field.matrix(i, j) = (i + j) % 3;
 
     currentPlayer = 0;
     players[currentPlayer]->Move(field, moveCallback);
