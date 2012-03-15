@@ -20,7 +20,7 @@ public:
     int Cols() const { return matrix.Cols(); }
     void Draw(SDL_Surface *screen);
 
-private:
+//private:
     Matrix<int> matrix;
 };
 

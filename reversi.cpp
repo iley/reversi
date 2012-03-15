@@ -45,7 +45,7 @@ void Window::Caption(const char *text)
 
 void Window::Update()
 {
-    SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
+    SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0x00, 0xB0, 0x00));
     field.Draw(screen);
     SDL_Flip(screen);
 }
@@ -74,6 +74,10 @@ int main()
     bool quit = false;
 
     init();
+
+    for (int i = 0; i < field.Rows(); ++i)
+        for (int j = 0; j < field.Cols(); ++j)
+            field.matrix(i, j) = (i + j) % 3;
 
     Window window;
 
