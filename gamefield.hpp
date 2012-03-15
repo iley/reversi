@@ -1,8 +1,8 @@
 #ifndef GAMEFIELD_HPP
 #define GAMEFIELD_HPP
 
+#include <SDL/SDL.h>
 #include "matrix.hpp"
-#include "SDL/SDL.h"
 
 enum {
     CHIP_NONE = 0,

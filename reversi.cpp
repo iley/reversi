@@ -20,21 +20,20 @@ public:
 
 Window::Window()
 {
-    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE);
+    screen = SDL_SetVideoMode(ScreenWidth, ScreenHeight, ScreenBpp, SDL_SWSURFACE);
 
     if (screen == NULL)
         throw IntelibX("Could not set video mode");
 
-    Caption("Window Event Test");
+    Caption("Reversi");
 }
 
 void Window::HandleEvents(SDL_Event &event)
 {
     if (event.type == SDL_VIDEORESIZE) {
-        screen = SDL_SetVideoMode(event.resize.w, event.resize.h, SCREEN_BPP, SDL_SWSURFACE | SDL_DOUBLEBUF);
+        screen = SDL_SetVideoMode(event.resize.w, event.resize.h, ScreenBpp, SDL_SWSURFACE | SDL_DOUBLEBUF);
 
     } else if (event.type == SDL_VIDEOEXPOSE) {
-        printf("expose\n");
         Update();
     }
 }

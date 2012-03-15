@@ -1,3 +1,3 @@
-const int SCREEN_WIDTH = 600;
-const int SCREEN_HEIGHT = 600;
-const int SCREEN_BPP = 32;
+const int ScreenWidth = 600;
+const int ScreenHeight = 600;
+const int ScreenBpp = 32;
