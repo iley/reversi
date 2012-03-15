@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include <exception>
+#include <sexpress/iexcept.hpp>
 
 const int SCREEN_WIDTH = 600;
 const int SCREEN_HEIGHT = 600;
@@ -22,7 +22,7 @@ Window::Window()
     screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE | SDL_RESIZABLE);
 
     if (screen == NULL)
-        throw "Could not set video mode";
+        throw IntelibX("Could not set video mode");
 
     caption("Window Event Test");
 }
@@ -33,7 +33,7 @@ void Window::handleEvents(SDL_Event &event)
         screen = SDL_SetVideoMode(event.resize.w, event.resize.h, SCREEN_BPP, SDL_SWSURFACE | SDL_RESIZABLE);
 
         if (screen == NULL)
-            throw "Could not resize the window";
+            throw IntelibX("Could not resize the window");
     } else if (event.type == SDL_ACTIVEEVENT) {
         if (event.active.state & SDL_APPACTIVE)
         {
@@ -56,7 +56,7 @@ void Window::handleEvents(SDL_Event &event)
         }
     } else if (event.type == SDL_VIDEOEXPOSE) {
         if( SDL_Flip( screen ) == -1 )
-            throw "Fuck";
+            throw IntelibX("Fuck");
     }
 }
 
@@ -103,7 +103,7 @@ int main()
 
         SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
 
-        if (SDL_Flip( screen ) == -1)
+        if (SDL_Flip(screen) == -1)
             return 1;
     }
 
