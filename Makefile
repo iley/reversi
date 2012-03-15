@@ -1,7 +1,7 @@
 CXX=clang++
 INTELIB=../intelib
 CXXFLAGS=-O0 -g -W -Wall -Wno-unused-parameter -I$(INTELIB) -L$(INTELIB)/build/intelib
-MODULES=reversi.o matrix.o gamefield.o
+MODULES=reversi.o matrix.o gamefield.o player.o
 LIBRARIES=-lSDL -lSDL_image -lSDL_gfx -lintelib
 
 .PHONY: build clean default
@@ -21,7 +21,9 @@ $(MODULES): %.o: %.cpp %.hpp
 
 gamefield.hpp: matrix.hpp reversi.hpp
 
-reversi.cpp: gamefield.hpp
+reversi.cpp: gamefield.hpp player.hpp
+
+player.hpp: gamefield.hpp
 
 clean:
 	rm -f reversi $(MODULES)

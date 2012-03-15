@@ -4,9 +4,12 @@
 #include <sexpress/iexcept.hpp>
 #include "gamefield.hpp"
 #include "reversi.hpp"
+#include "player.hpp"
 
 SDL_Surface *screen = NULL;
 GameField field(8, 8);
+Player *players[2];
+int currentPlayer;
 
 class Window
 {
@@ -17,6 +20,8 @@ public:
     void Caption(const char *text);
     void Update();
 };
+
+Window window;
 
 Window::Window()
 {
@@ -30,11 +35,24 @@ Window::Window()
 
 void Window::HandleEvents(SDL_Event &event)
 {
-    if (event.type == SDL_VIDEORESIZE) {
-        screen = SDL_SetVideoMode(event.resize.w, event.resize.h, ScreenBpp, SDL_SWSURFACE | SDL_DOUBLEBUF);
+    switch (event.type) {
 
-    } else if (event.type == SDL_VIDEOEXPOSE) {
+    case SDL_VIDEORESIZE:
+        screen = SDL_SetVideoMode(event.resize.w, event.resize.h, ScreenBpp, SDL_SWSURFACE | SDL_DOUBLEBUF);
+        break;
+
+    case SDL_VIDEOEXPOSE:
         Update();
+        break;
+
+    case SDL_MOUSEBUTTONDOWN:
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            int row = event.button.x / (ScreenHeight / field.Rows());
+            int col = event.button.y / (ScreenWidth / field.Cols());
+
+            HumanPlayer::HandleInput(row, col);
+        }
+        break;
     }
 }
 
@@ -50,6 +68,15 @@ void Window::Update()
     SDL_Flip(screen);
 }
 
+bool moveCallback(int row, int col)
+{
+    field.matrix(row,col) = players[currentPlayer]->Color();
+    window.Update();
+    currentPlayer = 1 - currentPlayer;
+    players[currentPlayer]->Move(field, moveCallback);
+    return true;
+}
+
 bool keyPressed(const SDL_Event &event, int key)
 {
     return event.type == SDL_KEYDOWN && event.key.keysym.sym == key;
@@ -57,15 +84,18 @@ bool keyPressed(const SDL_Event &event, int key)
 
 void init()
 {
+    players[0] = new HumanPlayer(CHIP_WHITE);
+    players[1] = new HumanPlayer(CHIP_BLACK);
+
     if (SDL_Init( SDL_INIT_EVERYTHING ) == -1)
         throw IntelibX("Couldn't initialize video");
-
-    SDL_EventState(SDL_VIDEOEXPOSE, SDL_ENABLE);
 }
 
 void deinit()
 {
     SDL_Quit();
+    delete players[1];
+    delete players[0];
 }
 
 int main()
@@ -79,7 +109,8 @@ int main()
         for (int j = 0; j < field.Cols(); ++j)
             field.matrix(i, j) = (i + j) % 3;
 
-    Window window;
+    currentPlayer = 0;
+    players[currentPlayer]->Move(field, moveCallback);
 
     while (!quit && SDL_WaitEvent(&event)) {
         window.HandleEvents(event);
