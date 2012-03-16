@@ -74,8 +74,8 @@ void Window::Update()
 
 bool moveCallback(int row, int col)
 {
-    if (field.matrix(row, col) == CHIP_NONE) {
-        field.matrix(row,col) = players[currentPlayer]->Color();
+    int color = players[currentPlayer]->Color();
+    if (field.Move(color, row, col)) {
         window.Update();
         currentPlayer = 1 - currentPlayer;
         UpdateCaption();
@@ -93,11 +93,16 @@ bool keyPressed(const SDL_Event &event, int key)
 
 void init()
 {
-    players[0] = new HumanPlayer(CHIP_WHITE);
-    players[1] = new HumanPlayer(CHIP_BLACK);
-
     if (SDL_Init( SDL_INIT_EVERYTHING ) == -1)
         throw IntelibX("Couldn't initialize video");
+
+    players[0] = new HumanPlayer(CHIP_WHITE);
+    players[1] = new HumanPlayer(CHIP_BLACK);
+    currentPlayer = 0;
+
+    UpdateCaption();
+
+    players[currentPlayer]->Move(field, moveCallback);
 }
 
 void deinit()
@@ -113,10 +118,6 @@ int main()
     bool quit = false;
 
     init();
-
-    currentPlayer = 0;
-    UpdateCaption();
-    players[currentPlayer]->Move(field, moveCallback);
 
     while (!quit && SDL_WaitEvent(&event)) {
         window.HandleEvents(event);

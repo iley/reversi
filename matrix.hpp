@@ -1,14 +1,18 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include <assert.h>
+#include <cassert>
+#include <string>
 
 template <class Tp>
 class Matrix
 {
 public:
-    Matrix(int r, int c)
-        : rows(r), cols(c), data(new Tp[c*r]) {}
+    Matrix(int r, int c) : rows(r), cols(c), data(new Tp[c*r])
+        {}
+
+    Matrix(const Matrix<Tp> &other) : rows(other.rows), cols(other.cols), data(new Tp[other.rows * other.cols])
+        {}
 
     ~Matrix()
     {
@@ -31,6 +35,12 @@ public:
 private:
     int rows, cols;
     Tp *data;
+
+    void CopyData(const Matrix &from)
+    {
+        assert(rows == from.rows && cols == from.cols);
+        memcpy(data, from.data, sizeof(Tp) * rows * cols);
+    }
 };
 
 #endif

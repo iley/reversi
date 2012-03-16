@@ -62,3 +62,27 @@ void GameField::Draw(SDL_Surface *screen)
             filledCircleColor(screen, i * ScreenHeight / Rows() + h, j * ScreenWidth / Cols() + w, r, color);
         }
 }
+
+int GameField::Get(int row, int col)
+{
+    return matrix(row, col);
+}
+
+bool GameField::IsValidMove(int color, int row, int col)
+{
+    if (matrix(row, col) != CHIP_NONE)
+        return false;
+
+    //TODO
+    return true;
+}
+
+bool GameField::Move(int color, int row, int col)
+{
+    if (IsValidMove(color, row, col)) {
+        matrix(row, col) = color;
+        return true;
+    } else {
+        return false;
+    }
+}

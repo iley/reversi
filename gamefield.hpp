@@ -16,9 +16,16 @@ public:
     GameField(int rows, int cols);
 
     void Reset();
+
     int Rows() const { return matrix.Rows(); }
     int Cols() const { return matrix.Cols(); }
+
     void Draw(SDL_Surface *screen);
+
+    int Get(int row, int col);
+
+    bool IsValidMove(int color, int row, int col);
+    bool Move(int color, int row, int col);
 
 //private:
     Matrix<int> matrix;
