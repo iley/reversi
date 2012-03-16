@@ -10,7 +10,7 @@ vector<HumanPlayer*> HumanPlayer::players;
 
 void HumanPlayer::HandleInput(int row, int col)
 {
-    for (vector<HumanPlayer*>::iterator it = players.begin(); it != players.end(); ++it) {
+    for (auto it = players.begin(); it != players.end(); ++it) {
         if ((*it)->FinishMove(row, col))
             break;
     }

@@ -1,6 +1,6 @@
-CXX=clang++
+CXX=g++
 INTELIB=../intelib
-CXXFLAGS=-O0 -g -W -Wall -Wno-unused-parameter -I$(INTELIB) -L$(INTELIB)/build/intelib
+CXXFLAGS=-O0 -g -std=c++0x -W -Wall -Wno-unused-parameter -I$(INTELIB) -L$(INTELIB)/build/intelib
 MODULES=reversi.o matrix.o gamefield.o player.o
 LIBRARIES=-lSDL -lSDL_gfx -lintelib
 

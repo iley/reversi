@@ -2,6 +2,7 @@
 #define GAMEFIELD_HPP
 
 #include <SDL/SDL.h>
+#include <cassert>
 #include "matrix.hpp"
 
 enum {
@@ -24,11 +25,12 @@ public:
 
     int Get(int row, int col);
 
-    bool IsValidMove(int color, int row, int col);
     bool Move(int color, int row, int col);
 
-//private:
+private:
     Matrix<int> matrix;
 };
+
+int OpponentColor(int color);
 
 #endif

@@ -2,15 +2,24 @@
 #include "reversi.hpp"
 #include <SDL/SDL_gfxPrimitives.h>
 #include <stdio.h>
+#include <algorithm>
+#include <vector>
 
 unsigned int color(unsigned int r, unsigned int g, unsigned int b, unsigned int a = 0xff)
 {
     return (r << 24) | (g << 16) | (b << 8) | a;
 }
 
-template <class Tp> Tp min(Tp x, Tp y)
+using std::min;
+
+int OpponentColor(int color)
 {
-    return x < y ? x : y;
+    if (color == CHIP_WHITE) {
+        return CHIP_BLACK;
+    } else {
+        assert(color == CHIP_BLACK);
+        return CHIP_WHITE;
+    }
 }
 
 const unsigned int
@@ -68,18 +77,50 @@ int GameField::Get(int row, int col)
     return matrix(row, col);
 }
 
-bool GameField::IsValidMove(int color, int row, int col)
-{
-    if (matrix(row, col) != CHIP_NONE)
-        return false;
-
-    //TODO
-    return true;
-}
+static const int directions = 8;
+static int shift[directions][2] = {
+    {  1,  0 },
+    { -1,  0 },
+    {  0,  1 },
+    {  0, -1 },
+    {  1,  1 },
+    { -1,  1 },
+    {  1, -1 },
+    { -1, -1 },
+};
 
 bool GameField::Move(int color, int row, int col)
 {
-    if (IsValidMove(color, row, col)) {
+    using namespace std;
+
+    if (matrix(row, col) != CHIP_NONE)
+        return false;
+
+    int chipsFlipped = 0;
+
+    for (int dir = 0; dir < directions; ++dir) {
+        int i = row, j = col;
+        vector<pair<int,int> > toFlip;
+
+        while (true) {
+            i += shift[dir][0];
+            j += shift[dir][1];
+
+            if (matrix.CheckBounds(i,j) && matrix(i,j) == OpponentColor(color))
+                toFlip.push_back(pair<int,int>(i,j));
+            else
+                break;
+        }
+
+        if (matrix.CheckBounds(i,j) && matrix(i,j) == color) {
+            for (auto it = toFlip.begin(); it != toFlip.end(); ++it) {
+                matrix(it->first, it->second) = color;
+                ++chipsFlipped;
+            }
+        }
+    }
+
+    if (chipsFlipped > 0) {
         matrix(row, col) = color;
         return true;
     } else {
