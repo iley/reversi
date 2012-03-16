@@ -44,7 +44,7 @@ void GameField::Reset()
     matrix(r-1,c) = matrix(r,c-1) = CHIP_BLACK;
 }
 
-void GameField::Draw(SDL_Surface *screen)
+void GameField::Draw(SDL_Surface *screen) const
 {
 
     for (int i = 1; i < Cols(); ++i)
@@ -72,7 +72,7 @@ void GameField::Draw(SDL_Surface *screen)
         }
 }
 
-int GameField::Get(int row, int col)
+int GameField::Get(int row, int col) const
 {
     return matrix(row, col);
 }
@@ -126,4 +126,9 @@ bool GameField::Move(int color, int row, int col)
     } else {
         return false;
     }
+}
+
+int GameField::Winner() const
+{
+    return CHIP_NONE;
 }

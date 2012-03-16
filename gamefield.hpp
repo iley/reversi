@@ -21,11 +21,13 @@ public:
     int Rows() const { return matrix.Rows(); }
     int Cols() const { return matrix.Cols(); }
 
-    void Draw(SDL_Surface *screen);
+    void Draw(SDL_Surface *screen) const;
 
-    int Get(int row, int col);
+    int Get(int row, int col) const;
 
     bool Move(int color, int row, int col);
+
+    int Winner() const;
 
 private:
     Matrix<int> matrix;

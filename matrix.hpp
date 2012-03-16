@@ -28,6 +28,12 @@ public:
         return data[cols * i + j];
     }
 
+    Tp operator() (int i, int j) const
+    {
+        assert(i >= 0 && i < rows && j >= 0 && j < cols);
+        return data[cols * i + j];
+    }
+
     Matrix &operator= (const Matrix<Tp> &other)
     {
         if (&other != this) {
