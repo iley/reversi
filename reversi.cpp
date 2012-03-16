@@ -25,7 +25,8 @@ Window window;
 void UpdateCaption()
 {
     static char buffer[64];
-    sprintf(buffer, "Reversi (player %d move)", currentPlayer + 1);
+    const char *color = (currentPlayer == 0 ? "white's" : "black's");
+    sprintf(buffer, "Reversi (%s turn)", color);
     window.Caption(buffer);
 }
 
