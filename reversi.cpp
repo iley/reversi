@@ -22,14 +22,19 @@ public:
 
 Window window;
 
+void UpdateCaption()
+{
+    static char buffer[64];
+    sprintf(buffer, "Reversi (player %d move)", currentPlayer + 1);
+    window.Caption(buffer);
+}
+
 Window::Window()
 {
     screen = SDL_SetVideoMode(ScreenWidth, ScreenHeight, ScreenBpp, SDL_SWSURFACE);
 
     if (screen == NULL)
         throw IntelibX("Could not set video mode");
-
-    Caption("Reversi");
 }
 
 void Window::HandleEvents(SDL_Event &event)
@@ -73,6 +78,7 @@ bool moveCallback(int row, int col)
         field.matrix(row,col) = players[currentPlayer]->Color();
         window.Update();
         currentPlayer = 1 - currentPlayer;
+        UpdateCaption();
         players[currentPlayer]->Move(field, moveCallback);
         return true;
     } else {
@@ -109,6 +115,7 @@ int main()
     init();
 
     currentPlayer = 0;
+    UpdateCaption();
     players[currentPlayer]->Move(field, moveCallback);
 
     while (!quit && SDL_WaitEvent(&event)) {
