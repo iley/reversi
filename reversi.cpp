@@ -147,15 +147,26 @@ bool keyPressed(const SDL_Event &event, int key)
     return event.type == SDL_KEYDOWN && event.key.keysym.sym == key;
 }
 
-void init()
+Player *createPlayer(const char *type, int color)
+{
+    printf("creating player of type '%s'\n", type);
+    if (strcmp(type, "human") == 0)
+        return new HumanPlayer(color);
+    else if (strcmp(type, "randbot") == 0)
+        return new RandBot(color);
+    else
+        return 0;
+}
+
+void init(Player *player1, Player *player2)
 {
     srand(time(0));
 
     if (SDL_Init( SDL_INIT_EVERYTHING ) == -1)
         throw IntelibX("Couldn't initialize video");
 
-    players[0] = new HumanPlayer(CHIP_WHITE);
-    players[1] = new RandBot(CHIP_BLACK);//HumanPlayer(CHIP_BLACK);
+    players[0] = player1;
+    players[1] = player2;
     currentPlayer = 0;
 
     UpdateCaption();
@@ -170,12 +181,26 @@ void deinit()
     delete players[0];
 }
 
-int main()
+int main(int argc, char **argv)
 {
     SDL_Event event;
     bool quit = false;
 
-    init();
+    const char *p1type = (argc >= 2 ? argv[1] : "human");
+    Player *player1 = createPlayer(p1type, CHIP_WHITE);
+    if (!player1) {
+        printf("Could not create player of type '%s'\n", p1type);
+        return 0;
+    }
+
+    const char *p2type = (argc >= 3 ? argv[2] : "randbot");
+    Player *player2 = createPlayer(p2type, CHIP_BLACK);
+    if (!player2) {
+        printf("Could not create player of type '%s'\n", p2type);
+        return 0;
+    }
+
+    init(player1, player2);
 
     while (!quit && SDL_WaitEvent(&event)) {
         window.HandleEvents(event);
