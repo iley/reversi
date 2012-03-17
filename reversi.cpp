@@ -101,14 +101,17 @@ bool moveCallback(int row, int col)
 
         int nextPlayer = 1 - currentPlayer;
 
-        if (field.HasMoves(players[nextPlayer]->Color()))
+        if (field.HasMoves(players[nextPlayer]->Color())) {
             currentPlayer = nextPlayer;
-
-        else if (!field.HasMoves(players[currentPlayer]->Color()))
+            UpdateCaption();
+            players[currentPlayer]->Move(field, moveCallback);
+        } else if (field.HasMoves(players[currentPlayer]->Color())) {
+            UpdateCaption();
+            players[currentPlayer]->Move(field, moveCallback);
+        } else {
             finishGame();
+        }
 
-        UpdateCaption();
-        players[currentPlayer]->Move(field, moveCallback);
         return true;
     } else {
         return false;
