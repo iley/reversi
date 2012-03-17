@@ -1,9 +1,15 @@
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+
 #include <SDL/SDL.h>
+
 #include <sexpress/iexcept.hpp>
+
 #include "gamefield.hpp"
 #include "reversi.hpp"
 #include "player.hpp"
+#include "randbot.hpp"
 
 SDL_Surface *screen = NULL;
 GameField field(8, 8);
@@ -125,11 +131,13 @@ bool keyPressed(const SDL_Event &event, int key)
 
 void init()
 {
+    srand(time(0));
+
     if (SDL_Init( SDL_INIT_EVERYTHING ) == -1)
         throw IntelibX("Couldn't initialize video");
 
-    players[0] = new HumanPlayer(CHIP_WHITE);
-    players[1] = new HumanPlayer(CHIP_BLACK);
+    players[0] = new RandBot(CHIP_WHITE);//HumanPlayer(CHIP_WHITE);
+    players[1] = new RandBot(CHIP_BLACK);//HumanPlayer(CHIP_BLACK);
     currentPlayer = 0;
 
     UpdateCaption();

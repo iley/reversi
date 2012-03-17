@@ -100,21 +100,21 @@ bool GameField::Move(int color, int row, int col)
 
     for (int dir = 0; dir < directions; ++dir) {
         int i = row, j = col;
-        vector<pair<int,int> > toFlip;
+        vector<Point> toFlip;
 
         while (true) {
             i += shift[dir][0];
             j += shift[dir][1];
 
             if (matrix.CheckBounds(i,j) && matrix(i,j) == OpponentColor(color))
-                toFlip.push_back(pair<int,int>(i,j));
+                toFlip.push_back(Point(i,j));
             else
                 break;
         }
 
         if (matrix.CheckBounds(i,j) && matrix(i,j) == color) {
             for (auto it = toFlip.begin(); it != toFlip.end(); ++it) {
-                matrix(it->first, it->second) = color;
+                matrix(it->row, it->col) = color;
                 ++chipsFlipped;
             }
         }
@@ -138,6 +138,20 @@ bool GameField::HasMoves(int color) const
                 return true;
 
     return false;
+}
+
+std::vector<Point> GameField::CorrectMoves(int color) const
+{
+    std::vector<Point> result;
+
+    for (int i = 0; i < Rows(); ++i)
+        for (int j = 0; j < Cols(); ++j) {
+            GameField tmp(*this);
+            if (tmp.Move(color, i, j))
+                result.push_back(Point(i,j));
+        }
+
+    return result;
 }
 
 int GameField::Score(int color) const
