@@ -15,6 +15,7 @@ class GameField
 {
 public:
     GameField(int rows, int cols);
+    GameField(const GameField &other) : matrix(other.matrix) {}
 
     void Reset();
 
@@ -26,8 +27,9 @@ public:
     int Get(int row, int col) const;
 
     bool Move(int color, int row, int col);
+    bool HasMoves(int color) const;
 
-    int Winner() const;
+    int Score(int color) const;
 
 private:
     Matrix<int> matrix;

@@ -13,6 +13,8 @@ int currentPlayer;
 class Window
 {
 public:
+    bool InputEnabled;
+
     Window();
 
     void HandleEvents(SDL_Event &event);
@@ -30,7 +32,7 @@ void UpdateCaption()
     window.Caption(buffer);
 }
 
-Window::Window()
+Window::Window() : InputEnabled(true)
 {
     screen = SDL_SetVideoMode(ScreenWidth, ScreenHeight, ScreenBpp, SDL_SWSURFACE);
 
@@ -51,7 +53,7 @@ void Window::HandleEvents(SDL_Event &event)
         break;
 
     case SDL_MOUSEBUTTONDOWN:
-        if (event.button.button == SDL_BUTTON_LEFT) {
+        if (InputEnabled && event.button.button == SDL_BUTTON_LEFT) {
             int row = event.button.x / (ScreenHeight / field.Rows());
             int col = event.button.y / (ScreenWidth / field.Cols());
 
@@ -73,12 +75,38 @@ void Window::Update()
     SDL_Flip(screen);
 }
 
+void finishGame()
+{
+    window.InputEnabled = false;
+
+    int whiteScore = field.Score(CHIP_WHITE),
+        blackScore = field.Score(CHIP_BLACK);
+
+    const char *message;
+    if (whiteScore > blackScore)
+        message = "The winner is white";
+    else if (blackScore > whiteScore)
+        message = "The winner is black";
+    else
+        message = "Draw";
+
+    window.Caption(message);
+}
+
 bool moveCallback(int row, int col)
 {
     int color = players[currentPlayer]->Color();
     if (field.Move(color, row, col)) {
         window.Update();
-        currentPlayer = 1 - currentPlayer;
+
+        int nextPlayer = 1 - currentPlayer;
+
+        if (field.HasMoves(players[nextPlayer]->Color()))
+            currentPlayer = nextPlayer;
+
+        else if (!field.HasMoves(players[currentPlayer]->Color()))
+            finishGame();
+
         UpdateCaption();
         players[currentPlayer]->Move(field, moveCallback);
         return true;

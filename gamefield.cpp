@@ -128,7 +128,26 @@ bool GameField::Move(int color, int row, int col)
     }
 }
 
-int GameField::Winner() const
+bool GameField::HasMoves(int color) const
 {
-    return CHIP_NONE;
+    GameField tmp(*this);
+
+    for (int i = 0; i < Rows(); ++i)
+        for (int j = 0; j < Cols(); ++j)
+            if (tmp.Move(color, i, j))
+                return true;
+
+    return false;
+}
+
+int GameField::Score(int color) const
+{
+    int result = 0;
+
+    for (int i = 0; i < Rows(); ++i)
+        for (int j = 0; j < Cols(); ++j)
+            if (matrix(i,j) == color)
+                ++result;
+
+    return result;
 }
