@@ -11,6 +11,7 @@
 #include "reversi.hpp"
 #include "player.hpp"
 #include "randbot.hpp"
+#include "plgbot.hpp"
 
 SDL_Surface *screen = NULL;
 GameField field(8, 8);
