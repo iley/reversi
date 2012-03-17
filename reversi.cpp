@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cstdarg>
 #include <ctime>
 
 #include <SDL/SDL.h>
@@ -15,6 +16,19 @@ SDL_Surface *screen = NULL;
 GameField field(8, 8);
 Player *players[2];
 int currentPlayer;
+
+#ifdef DEBUG
+void debug(const char *fmt, ...)
+{
+    va_list arglist;
+    va_start(arglist, fmt);
+    vfprintf(stderr, fmt, arglist);
+    fflush(stderr);
+    va_end(arglist);
+}
+#else
+void debug(const char *fmt, ...) {}
+#endif
 
 class Window
 {
@@ -63,6 +77,8 @@ void Window::HandleEvents(SDL_Event &event)
             int row = event.button.x / (ScreenHeight / field.Rows());
             int col = event.button.y / (ScreenWidth / field.Cols());
 
+            debug("human tries make move (%d, %d)\n", row, col);
+
             HumanPlayer::HandleInput(row, col);
         }
         break;
@@ -101,6 +117,8 @@ void finishGame()
 
 bool moveCallback(int row, int col)
 {
+    debug("move callback (%d, %d)\n", row, col);
+
     int color = players[currentPlayer]->Color();
     if (field.Move(color, row, col)) {
         window.Update();
@@ -136,7 +154,7 @@ void init()
     if (SDL_Init( SDL_INIT_EVERYTHING ) == -1)
         throw IntelibX("Couldn't initialize video");
 
-    players[0] = new RandBot(CHIP_WHITE);//HumanPlayer(CHIP_WHITE);
+    players[0] = new HumanPlayer(CHIP_WHITE);
     players[1] = new RandBot(CHIP_BLACK);//HumanPlayer(CHIP_BLACK);
     currentPlayer = 0;
 

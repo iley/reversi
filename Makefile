@@ -1,6 +1,6 @@
 CXX=g++
 INTELIB=../intelib
-CXXFLAGS=-O0 -g -std=c++0x -W -Wall -Wno-unused-parameter -I$(INTELIB) -L$(INTELIB)/build/intelib
+CXXFLAGS=-O0 -g -std=c++0x -DDEBUG -W -Wall -Wno-unused-parameter -I$(INTELIB) -L$(INTELIB)/build/intelib
 MODULES=reversi.o matrix.o gamefield.o player.o randbot.o
 LIBRARIES=-lSDL -lSDL_gfx -lintelib
 
@@ -24,6 +24,8 @@ gamefield.hpp: matrix.hpp reversi.hpp
 reversi.cpp: gamefield.hpp player.hpp randbot.hpp
 
 player.hpp: gamefield.hpp
+
+player.cpp: reversi.hpp
 
 randbot.hpp: player.hpp gamefield.hpp
 

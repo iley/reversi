@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include "reversi.hpp"
 #include <vector>
 #include <cassert>
 
@@ -22,20 +23,26 @@ HumanPlayer::HumanPlayer(int color) : Player(color), waiting(false), callback(0)
 
 bool HumanPlayer::FinishMove(int row, int col)
 {
+    debug("finish move\n");
+
     if (waiting) {
         assert(callback);
-        if (callback(row, col)) {
-            waiting = false;
-            callback = 0;
+        waiting = false;
+        if (!callback(row, col)) {
+            waiting = true;
         }
         return true;
     } else {
+        debug("not waiting\n");
+
         return false;
     }
 }
 
 void HumanPlayer::Move(GameField &field, MoveCallback cb)
 {
+    debug("waiting for human move\n");
+
     callback = cb;
     waiting = true;
 }
