@@ -1,2 +1,4 @@
 reversi
 *.o
+bot.hpp
+bot.cpp
