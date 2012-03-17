@@ -17,6 +17,8 @@ GameField field(8, 8);
 Player *players[2];
 int currentPlayer;
 
+const char *DefaultPlayers[] = { "human", "randbot" };
+
 #ifdef DEBUG
 void debug(const char *fmt, ...)
 {
@@ -186,21 +188,19 @@ int main(int argc, char **argv)
     SDL_Event event;
     bool quit = false;
 
-    const char *p1type = (argc >= 2 ? argv[1] : "human");
-    Player *player1 = createPlayer(p1type, CHIP_WHITE);
-    if (!player1) {
-        printf("Could not create player of type '%s'\n", p1type);
-        return 0;
+    Player *players[2];
+    int colors[] = { CHIP_WHITE, CHIP_BLACK };
+
+    for (int i = 0; i < 2; ++i) {
+        const char *type = (argc > i+1 ? argv[i+1] : DefaultPlayers[i]);
+        players[i] = createPlayer(type, colors[i]);
+        if (!players[i]) {
+            fprintf(stderr, "Could not create player of type '%s'\n", type);
+            return 1;
+        }
     }
 
-    const char *p2type = (argc >= 3 ? argv[2] : "randbot");
-    Player *player2 = createPlayer(p2type, CHIP_BLACK);
-    if (!player2) {
-        printf("Could not create player of type '%s'\n", p2type);
-        return 0;
-    }
-
-    init(player1, player2);
+    init(players[0], players[1]);
 
     while (!quit && SDL_WaitEvent(&event)) {
         window.HandleEvents(event);
