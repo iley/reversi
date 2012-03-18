@@ -1,5 +1,6 @@
 #include "randbot.hpp"
 #include "reversi.hpp"
+#include "gamefield.hpp"
 #include <cstdlib>
 
 void RandBot::Move(const GameField &field, MoveCallback callback)

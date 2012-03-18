@@ -2,7 +2,6 @@
 #define RANDBOT_HPP
 
 #include "player.hpp"
-#include "gamefield.hpp"
 
 class RandBot : public Player
 {

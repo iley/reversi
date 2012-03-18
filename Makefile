@@ -23,13 +23,19 @@ $(MODULES): %.o: %.cpp %.hpp
 
 gamefield.hpp: matrix.hpp reversi.hpp
 
+gamefield.cpp: reversi.hpp
+
 reversi.cpp: gamefield.hpp player.hpp randbot.hpp plgbot.hpp
 
 player.hpp: gamefield.hpp
 
 player.cpp: reversi.hpp
 
-randbot.hpp: player.hpp gamefield.hpp
+randbot.hpp: player.hpp
+
+randbot.cpp: reversi.hpp
+
+plgbot.hpp: player.hpp
 
 plgbot.cpp: bot.hpp
 
