@@ -2,7 +2,6 @@
 #define GAMEFIELD_HPP
 
 #include <cassert>
-#include <vector>
 #include <SDL/SDL.h>
 #include <sexpress/sexpress.hpp>
 #include <sexpress/gensref.hpp>
@@ -15,11 +14,45 @@ enum {
     CHIP_BLACK,
 };
 
-struct Point
+class IntelibX_not_a_point : public IntelibX
 {
+public:
+    IntelibX_not_a_point(SReference a_param);
+};
+
+class PointExpression : public SExpression
+{
+    friend class Point;
+public:
+    static IntelibTypeId TypeId;
+
+    int Row() const
+        { return row; }
+
+    int Col() const
+        { return col; }
+
+    virtual SString TextRepresentation() const;
+
+private:
     int row, col;
 
-    Point(int r, int c) : row(r), col(c) {}
+    PointExpression(int r, int c) : SExpression(TypeId), row(r), col(c)
+        {}
+
+    PointExpression(const PointExpression &other) : SExpression(TypeId), row(other.row), col(other.col)
+        {}
+};
+
+typedef GenericSReference<PointExpression, IntelibX_not_a_point> Point_Super;
+
+class Point : public Point_Super
+{
+public:
+    Point(int row, int col) : Point_Super(new PointExpression(row, col))
+        {}
+
+    Point(SReference &ref) : Point_Super(ref) {}
 };
 
 class IntelibX_not_a_game_field : public IntelibX
@@ -51,7 +84,7 @@ public:
     bool Move(int color, int row, int col);
     bool HasMoves(int color) const;
 
-    std::vector<Point> CorrectMoves(int color) const;
+     SReference CorrectMoves(int color) const;
 
     int Score(int color) const;
 

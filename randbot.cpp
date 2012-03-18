@@ -1,10 +1,21 @@
 #include "randbot.hpp"
+#include "reversi.hpp"
 #include <cstdlib>
 
 void RandBot::Move(const GameField &field, MoveCallback callback)
 {
-    std::vector<Point> moves = field->CorrectMoves(Color());
+    SReference moves = field->CorrectMoves(Color());
 
-    int x = moves.size() * rand() / RAND_MAX;
-    callback(moves[x].row, moves[x].col);
+    int count = 0;
+    for (SReference p = moves; !p.IsEmptyList(); p = p.Cdr())
+        ++count;
+
+    int x = count * rand() / RAND_MAX;
+
+    SReference p = moves;
+    for (int i = 0; i < x; ++i)
+        p = p.Cdr();
+
+    Point point = p.Car().Car();
+    callback(point->Row(), point->Col());
 }

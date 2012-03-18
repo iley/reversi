@@ -1,9 +1,8 @@
 #include "gamefield.hpp"
 #include "reversi.hpp"
 #include <SDL/SDL_gfxPrimitives.h>
-#include <stdio.h>
-#include <algorithm>
-#include <vector>
+#include <cstdio>
+#include <cstring>
 
 unsigned int color(unsigned int r, unsigned int g, unsigned int b, unsigned int a = 0xff)
 {
@@ -27,6 +26,18 @@ const unsigned int
     chipBorderColor = color(0x00, 0x00, 0x00),
     blackChipColor = color(0x00, 0x00, 0x00),
     whiteChipColor = color(0xff, 0xff, 0xff);
+
+IntelibX_not_a_point::IntelibX_not_a_point(SReference a_param)
+    : IntelibX("Not a point", a_param) {}
+
+IntelibTypeId PointExpression::TypeId(&SExpression::TypeId, true);
+
+SString PointExpression::TextRepresentation() const
+{
+    static char buffer[32];
+    sprintf(buffer, "(%d, %d)", row, col);
+    return buffer;
+}
 
 IntelibX_not_a_game_field::IntelibX_not_a_game_field(SReference a_param)
     : IntelibX("Not a game field", a_param) {}
@@ -104,21 +115,22 @@ bool GameFieldExpression::Move(int color, int row, int col)
 
     for (int dir = 0; dir < directions; ++dir) {
         int i = row, j = col;
-        vector<Point> toFlip;
+        SReference toFlip = *PTheEmptyList;
 
         while (true) {
             i += shift[dir][0];
             j += shift[dir][1];
 
             if (matrix.CheckBounds(i,j) && matrix(i,j) == OpponentColor(color))
-                toFlip.push_back(Point(i,j));
+                toFlip = Point(i,j) ^ toFlip;
             else
                 break;
         }
 
         if (matrix.CheckBounds(i,j) && matrix(i,j) == color) {
-            for (auto it = toFlip.begin(); it != toFlip.end(); ++it) {
-                matrix(it->row, it->col) = color;
+            for (SReference p = toFlip; !p.IsEmptyList(); p = p.Cdr()) {
+                Point point = p.Car();
+                matrix(point->Row(), point->Col()) = color;
                 ++chipsFlipped;
             }
         }
@@ -144,15 +156,17 @@ bool GameFieldExpression::HasMoves(int color) const
     return false;
 }
 
-std::vector<Point> GameFieldExpression::CorrectMoves(int color) const
+SReference GameFieldExpression::CorrectMoves(int color) const
 {
-    std::vector<Point> result;
+    SReference result = *PTheEmptyList;
 
     for (int i = 0; i < Rows(); ++i)
         for (int j = 0; j < Cols(); ++j) {
             GameField tmp(Clone());
-            if (tmp->Move(color, i, j))
-                result.push_back(Point(i,j));
+            if (tmp->Move(color, i, j)) {
+                SReference cell = Point(i,j) ^ tmp;
+                result = cell ^ result;
+            }
         }
 
     return result;
