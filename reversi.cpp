@@ -18,7 +18,7 @@ GameField field(8, 8);
 Player *players[2];
 int currentPlayer;
 
-const char *DefaultPlayers[] = { "human", "randbot" };
+const char *DefaultPlayers[] = { "human", "plgbot" };
 
 #ifdef DEBUG
 void debug(const char *fmt, ...)
@@ -152,11 +152,13 @@ bool keyPressed(const SDL_Event &event, int key)
 
 Player *createPlayer(const char *type, int color)
 {
-    printf("creating player of type '%s'\n", type);
+    debug("creating player of type '%s'\n", type);
     if (strcmp(type, "human") == 0)
         return new HumanPlayer(color);
     else if (strcmp(type, "randbot") == 0)
         return new RandBot(color);
+    else if (strcmp(type, "plgbot") == 0)
+        return new PlgBot(color);
     else
         return 0;
 }

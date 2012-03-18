@@ -1,6 +1,6 @@
 CXX=g++
 INTELIB=../intelib
-TRANS=$(INTELIB)/prolog/pl/trans.pro
+TRANS=$(INTELIB)/prolog/library/pl/trans.pro
 CXXFLAGS_WARN=-W -Wall -Wno-extra -Wno-unused-parameter -Wno-unused-function -W-no-unused-variable 
 CXXFLAGS=$(CXXFLAG_WARN) -O0 -g -std=c++0x -DDEBUG -I$(INTELIB) -L$(INTELIB)/build/intelib
 MODULES=reversi.o matrix.o gamefield.o player.o randbot.o plgbot.o bot.o
@@ -37,7 +37,7 @@ randbot.cpp: reversi.hpp
 
 plgbot.hpp: player.hpp
 
-plgbot.cpp: bot.hpp
+plgbot.cpp: bot.hpp reversi.hpp
 
 bot.hpp: bot.cpp
 
