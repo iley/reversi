@@ -9,7 +9,7 @@ class PlgBot : public Player
 public:
     PlgBot(int color);
 
-    virtual void Move(GameField &field, MoveCallback callback);
+    virtual void Move(const GameField &field, MoveCallback callback);
 };
 
 #endif

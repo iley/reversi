@@ -39,7 +39,7 @@ bool HumanPlayer::FinishMove(int row, int col)
     }
 }
 
-void HumanPlayer::Move(GameField &field, MoveCallback cb)
+void HumanPlayer::Move(const GameField &field, MoveCallback cb)
 {
     debug("waiting for human move\n");
 

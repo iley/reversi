@@ -13,7 +13,7 @@ public:
     virtual ~Player();
 
     int Color() const { return color; }
-    virtual void Move(GameField &field, MoveCallback callback) = 0;
+    virtual void Move(const GameField &field, MoveCallback callback) = 0;
 
 private:
     int color;
@@ -28,7 +28,7 @@ public:
     HumanPlayer(int color);
 
     bool FinishMove(int row, int col);
-    virtual void Move(GameField &field, MoveCallback cb);
+    virtual void Move(const GameField &field, MoveCallback cb);
 
 private:
     static std::vector<HumanPlayer*> players;

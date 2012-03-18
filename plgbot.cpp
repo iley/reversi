@@ -1,4 +1,5 @@
 #include "plgbot.hpp"
+#include "bot.hpp"
 
 static bool predicateMoves(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
@@ -9,6 +10,6 @@ PlgBot::PlgBot(int color) : Player(color)
 {
 }
 
-void PlgBot::Move(GameField &field, MoveCallback callback)
+void PlgBot::Move(const GameField &field, MoveCallback callback)
 {
 }

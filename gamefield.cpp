@@ -28,12 +28,16 @@ const unsigned int
     blackChipColor = color(0x00, 0x00, 0x00),
     whiteChipColor = color(0xff, 0xff, 0xff);
 
-GameField::GameField(int rows, int cols) : matrix(rows, cols)
-{
-    Reset();
+IntelibX_not_a_game_field::IntelibX_not_a_game_field(SReference a_param)
+    : IntelibX("Not a game field", a_param) {}
+
+IntelibTypeId GameFieldExpression::TypeId(&SExpression::TypeId, true);
+
+SExpression *GameFieldExpression::Clone() const {
+    return new GameFieldExpression(*this);
 }
 
-void GameField::Reset()
+void GameFieldExpression::Reset()
 {
     for (int i = 0; i < Rows(); ++i)
         for (int j = 0; j < Cols(); ++j)
@@ -44,7 +48,7 @@ void GameField::Reset()
     matrix(r-1,c) = matrix(r,c-1) = CHIP_BLACK;
 }
 
-void GameField::Draw(SDL_Surface *screen) const
+void GameFieldExpression::Draw(SDL_Surface *screen) const
 {
 
     for (int i = 1; i < Cols(); ++i)
@@ -72,7 +76,7 @@ void GameField::Draw(SDL_Surface *screen) const
         }
 }
 
-int GameField::Get(int row, int col) const
+int GameFieldExpression::Get(int row, int col) const
 {
     return matrix(row, col);
 }
@@ -89,7 +93,7 @@ static int shift[directions][2] = {
     { -1, -1 },
 };
 
-bool GameField::Move(int color, int row, int col)
+bool GameFieldExpression::Move(int color, int row, int col)
 {
     using namespace std;
 
@@ -128,33 +132,33 @@ bool GameField::Move(int color, int row, int col)
     }
 }
 
-bool GameField::HasMoves(int color) const
+bool GameFieldExpression::HasMoves(int color) const
 {
-    GameField tmp(*this);
+    GameField tmp(Clone());
 
     for (int i = 0; i < Rows(); ++i)
         for (int j = 0; j < Cols(); ++j)
-            if (tmp.Move(color, i, j))
+            if (tmp->Move(color, i, j))
                 return true;
 
     return false;
 }
 
-std::vector<Point> GameField::CorrectMoves(int color) const
+std::vector<Point> GameFieldExpression::CorrectMoves(int color) const
 {
     std::vector<Point> result;
 
     for (int i = 0; i < Rows(); ++i)
         for (int j = 0; j < Cols(); ++j) {
-            GameField tmp(*this);
-            if (tmp.Move(color, i, j))
+            GameField tmp(Clone());
+            if (tmp->Move(color, i, j))
                 result.push_back(Point(i,j));
         }
 
     return result;
 }
 
-int GameField::Score(int color) const
+int GameFieldExpression::Score(int color) const
 {
     int result = 0;
 
@@ -164,4 +168,9 @@ int GameField::Score(int color) const
                 ++result;
 
     return result;
+}
+
+SString GameFieldExpression::TextRepresentation() const
+{
+    return "<GAME FIELD>";
 }
