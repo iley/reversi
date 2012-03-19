@@ -11,7 +11,7 @@ void RandBot::Move(const GameField &field, MoveCallback callback)
     for (SReference p = moves; !p.IsEmptyList(); p = p.Cdr())
         ++count;
 
-    int x = count * rand() / RAND_MAX;
+    int x = rand() % count;
 
     SReference p = moves;
     for (int i = 0; i < x; ++i)
