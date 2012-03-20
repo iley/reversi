@@ -35,7 +35,7 @@ randbot.hpp: player.hpp
 
 randbot.cpp: reversi.hpp
 
-plgbot.hpp: player.hpp
+plgbot.hpp: player.hpp bot.hpp
 
 plgbot.cpp: bot.hpp reversi.hpp
 
@@ -45,4 +45,4 @@ bot.cpp: bot.pro
 	prolog -qs $(TRANS) -t "translate('$<')"
 
 clean:
-	rm -f reversi $(MODULES)
+	rm -f reversi $(MODULES) bot.hpp bot.cpp
