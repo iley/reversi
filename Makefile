@@ -45,4 +45,4 @@ bot.cpp: bot.pro
 	prolog -qs $(TRANS) -t "translate('$<')"
 
 clean:
-	rm -f reversi $(MODULES)
+	rm -f reversi $(MODULES) bot.hpp bot.cpp
