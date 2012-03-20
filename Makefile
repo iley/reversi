@@ -35,7 +35,7 @@ randbot.hpp: player.hpp
 
 randbot.cpp: reversi.hpp
 
-plgbot.hpp: player.hpp
+plgbot.hpp: player.hpp bot.hpp
 
 plgbot.cpp: bot.hpp reversi.hpp
 
