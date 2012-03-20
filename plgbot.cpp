@@ -32,6 +32,25 @@ static bool predicatePointCol(const PlgAtom &functor, const SReference &args, Pl
     return result.Unify(SReference(point->Col()), cont.Context());
 }
 
+static bool predicateScore(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
+{
+    GameField field = args.Car();
+    int color = args.Cdr().Car().GetInt();
+    PlgReference result = args.Cdr().Cdr().Car();
+
+    int sum = 0;
+    for (int i = 0; i < field->Rows(); ++i)
+        for (int j = 0; j < field->Cols(); ++j) {
+            int chip = field->Get(i,j);
+            if (chip == color)
+                ++sum;
+            else if (chip == OpponentColor(color))
+                --sum;
+        }
+
+    return result.Unify(SReference(sum), cont.Context());
+}
+
 PlgBot::PlgBot(int color) : Player(color)
 {
     using namespace bot;

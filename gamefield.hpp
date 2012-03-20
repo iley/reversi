@@ -14,6 +14,8 @@ enum {
     CHIP_BLACK,
 };
 
+int OpponentColor(int color);
+
 class IntelibX_not_a_point : public IntelibX
 {
 public:
