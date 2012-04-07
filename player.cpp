@@ -23,7 +23,7 @@ HumanPlayer::HumanPlayer(int color) : Player(color), waiting(false), callback(0)
 
 bool HumanPlayer::FinishMove(int row, int col)
 {
-    debug("finish move\n");
+    debug("finish move");
 
     if (waiting) {
         assert(callback);
@@ -33,7 +33,7 @@ bool HumanPlayer::FinishMove(int row, int col)
         }
         return true;
     } else {
-        debug("not waiting\n");
+        debug("not waiting");
 
         return false;
     }
@@ -41,7 +41,7 @@ bool HumanPlayer::FinishMove(int row, int col)
 
 void HumanPlayer::Move(const GameField &field, MoveCallback cb)
 {
-    debug("waiting for human move\n");
+    debug("waiting for human move");
 
     callback = cb;
     waiting = true;
