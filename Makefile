@@ -1,8 +1,14 @@
 CXX=g++
 INTELIB=../intelib
 TRANS=$(INTELIB)/prolog/library/pl/trans.pro
+
+CXXFLAGS_RELEASE=-O3 -ffast-math
+CXXFLAGS_DEBUG=-O0 -DDEBUG
+CXXFLAGS_OPT=$(CXXFLAGS_RELEASE)
+
 CXXFLAGS_WARN=-W -Wall -Wno-extra -Wno-unused-parameter -Wno-unused-function -W-no-unused-variable 
-CXXFLAGS=$(CXXFLAG_WARN) -O2 -g -std=c++0x -DDEBUG -I$(INTELIB) -L$(INTELIB)/build/intelib
+CXXFLAGS=$(CXXFLAG_WARN) $(CXXFLAGS_OPT) -g -std=c++0x -I$(INTELIB) -L$(INTELIB)/build/intelib
+
 MODULES=reversi.o matrix.o gamefield.o player.o randbot.o plgbot.o bot.o
 LIBRARIES=-lSDL -lSDL_gfx -lintelib
 
