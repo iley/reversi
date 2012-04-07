@@ -1,23 +1,49 @@
 #include "plgbot.hpp"
 #include "reversi.hpp"
 #include "bot.hpp"
-#include "prolog/prolog.hpp"
-#include "prolog/library/library.hpp"
+#include <prolog/prolog.hpp>
+#include <prolog/library/library.hpp>
 #include <cassert>
 
+// correct_moves(+pos(Field,Color,History),-Moves)
 static bool predicateCorrectMoves(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
     using namespace PlgStdLib;
+    using bot::pos;
     static SListConstructor S;
 
-    GameField field = args.Car();
-    SReference color = args.Cdr().Car();
-    PlgReference result = args.Cdr().Cdr().Car();
+    PlgTerm position = args.Car();
+    PlgReference result = args.Cdr().Car();
+
+    GameField field = position->Args().Car();
+    SReference color = position->Args().Cdr().Car();
+    SReference history = position->Args().Cdr().Cdr().Car();
 
     SReference list = field->CorrectMoves(color.GetInt());
-    return result.Unify(list, cont.Context());
+
+    SReference positionList = *PTheEmptyList;
+    SReference oppColor = OpponentColor(color.GetInt());
+    for (SReference p = list; !p.IsEmptyList(); p = p.Cdr()) {
+        SReference move = p.Car();
+        SReference newHistory = move.Car() ^ history;
+        SReference newField = move.Cdr();
+        positionList = pos(newField, oppColor, newHistory) ^ positionList;
+    }
+
+    return result.Unify(positionList, cont.Context());
 }
 
+// opponent_color(+Color,-Result)
+static bool predicateOpponentColor(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
+{
+    PlgReference color = args.Car();
+    PlgReference result = args.Cdr().Car();
+
+    int oc = OpponentColor(color.GetInt());
+    result.Unify(SReference(oc), cont.Context());
+}
+
+// point_row(+Point,-Row)
 static bool predicatePointRow(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
     Point point = args.Car();
@@ -25,6 +51,7 @@ static bool predicatePointRow(const PlgAtom &functor, const SReference &args, Pl
     return result.Unify(SReference(point->Row()), cont.Context());
 }
 
+// point_col(+Point,-Col)
 static bool predicatePointCol(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
     Point point = args.Car();
@@ -32,6 +59,7 @@ static bool predicatePointCol(const PlgAtom &functor, const SReference &args, Pl
     return result.Unify(SReference(point->Col()), cont.Context());
 }
 
+// score(+Field,+Color,-Score)
 static bool predicateScore(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
     GameField field = args.Car();
@@ -55,7 +83,8 @@ PlgBot::PlgBot(int color) : Player(color)
 {
     using namespace bot;
 
-    correct_moves.SetPredicate(predicateCorrectMoves, 3);
+    correct_moves.SetPredicate(predicateCorrectMoves, 2);
+    score.SetPredicate(predicateScore, 3);
     point_row.SetPredicate(predicatePointRow, 2);
     point_col.SetPredicate(predicatePointCol, 2);
 }
