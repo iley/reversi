@@ -21,6 +21,9 @@ static bool predicateCorrectMoves(const PlgAtom &functor, const SReference &args
 
     SReference list = field->CorrectMoves(color.GetInt());
 
+    if (list.IsEmptyList())
+        return false;
+
     SReference positionList = *PTheEmptyList;
     SReference oppColor = OpponentColor(color.GetInt());
     for (SReference p = list; !p.IsEmptyList(); p = p.Cdr()) {
@@ -83,6 +86,8 @@ PlgBot::PlgBot(int color) : Player(color)
 {
     using namespace bot;
 
+    InitDatabase(db);
+
     correct_moves.SetPredicate(predicateCorrectMoves, 2);
     score.SetPredicate(predicateScore, 3);
     point_row.SetPredicate(predicatePointRow, 2);
@@ -95,7 +100,7 @@ void PlgBot::Move(const GameField &field, MoveCallback callback)
     using namespace PlgStdLib;
 
     PlgVariable Row("Row"), Col("Col");
-    PlgContinuation cont = Database().Query( move(field, SReference(Color()), Row, Col) );
+    PlgContinuation cont = db.Query( move(field, SReference(Color()), Row, Col) );
     debug("running query\n");
     bool status = cont->Next();
     assert(status);

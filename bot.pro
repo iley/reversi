@@ -1,5 +1,4 @@
 move(Field, Color, Row, Col) :-
-  %trace,
   set_color(Color),
   minmax(pos(Field, Color, []), 0, BestPos, _),
   BestPos = pos(_, _, [Point]),
@@ -16,6 +15,10 @@ max_level(3).
 
 score(pos(Field, Color, _), Score) :-
   score(Field, Color, Score).
+
+len([], 0) :- !.
+len([_], 1) :- !.
+len([_|T], L) :- len(T,TL), L is TL + 1.
 
 minmax(Pos, Level, BestPos, Score) :-
   max_level(MaxLevel),
