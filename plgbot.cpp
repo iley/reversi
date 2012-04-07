@@ -4,6 +4,7 @@
 #include <prolog/prolog.hpp>
 #include <prolog/library/library.hpp>
 #include <cassert>
+#include <climits>
 
 // correct_moves(+pos(Field,Color,History),-Moves)
 static bool predicateCorrectMoves(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
@@ -36,14 +37,18 @@ static bool predicateCorrectMoves(const PlgAtom &functor, const SReference &args
     return result.Unify(positionList, cont.Context());
 }
 
-// opponent_color(+Color,-Result)
-static bool predicateOpponentColor(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
+// int_min(-Result)
+static bool predicateIntMin(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
-    PlgReference color = args.Car();
-    PlgReference result = args.Cdr().Car();
+    PlgReference result = args.Car();
+    result.Unify(SReference(INT_MIN), cont.Context());
+}
 
-    int oc = OpponentColor(color.GetInt());
-    result.Unify(SReference(oc), cont.Context());
+// int_max(-Result)
+static bool predicateIntMax(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
+{
+    PlgReference result = args.Car();
+    result.Unify(SReference(INT_MAX), cont.Context());
 }
 
 // point_row(+Point,-Row)
@@ -92,6 +97,8 @@ PlgBot::PlgBot(int color) : Player(color)
     score.SetPredicate(predicateScore, 3);
     point_row.SetPredicate(predicatePointRow, 2);
     point_col.SetPredicate(predicatePointCol, 2);
+    int_min.SetPredicate(predicateIntMin, 1);
+    int_max.SetPredicate(predicateIntMax, 1);
 }
 
 void PlgBot::Move(const GameField &field, MoveCallback callback)
