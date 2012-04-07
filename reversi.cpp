@@ -194,7 +194,7 @@ int main(int argc, char **argv)
     bool quit = false;
 
     Player *players[2];
-    int colors[] = { CHIP_WHITE, CHIP_BLACK };
+    int colors[] = { CHIP_BLACK, CHIP_WHITE};
 
     for (int i = 0; i < 2; ++i) {
         const char *type = (argc > i+1 ? argv[i+1] : DefaultPlayers[i]);
