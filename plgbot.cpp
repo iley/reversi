@@ -101,13 +101,13 @@ void PlgBot::Move(const GameField &field, MoveCallback callback)
 
     PlgVariable Row("Row"), Col("Col");
     PlgContinuation cont = db.Query( move(field, SReference(Color()), Row, Col) );
-    debug("running query\n");
+    debug("running query");
     bool status = cont->Next();
     assert(status);
     
     SReference row = cont->GetValue(Row),
                col = cont->GetValue(Col);
 
-    debug("callback\n");
+    debug("callback");
     callback(row.GetInt(), col.GetInt());
 }

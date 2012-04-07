@@ -26,6 +26,7 @@ void debug(const char *fmt, ...)
     va_list arglist;
     va_start(arglist, fmt);
     vfprintf(stderr, fmt, arglist);
+    fprintf(stderr, "\n");
     fflush(stderr);
     va_end(arglist);
 }
@@ -80,7 +81,7 @@ void Window::HandleEvents(SDL_Event &event)
             int row = event.button.x / (ScreenHeight / field->Rows());
             int col = event.button.y / (ScreenWidth / field->Cols());
 
-            debug("human tries make move (%d, %d)\n", row, col);
+            debug("human tries make move (%d, %d)", row, col);
 
             HumanPlayer::HandleInput(row, col);
         }
@@ -115,12 +116,13 @@ void finishGame()
     else
         message = "Draw";
 
+    debug(message);
     window.Caption(message);
 }
 
 bool moveCallback(int row, int col)
 {
-    debug("move callback (%d, %d)\n", row, col);
+    debug("move callback (%d, %d)", row, col);
 
     int color = players[currentPlayer]->Color();
     if (field->Move(color, row, col)) {
@@ -152,7 +154,7 @@ bool keyPressed(const SDL_Event &event, int key)
 
 Player *createPlayer(const char *type, int color)
 {
-    debug("creating player of type '%s'\n", type);
+    debug("creating player of type '%s'", type);
     if (strcmp(type, "human") == 0)
         return new HumanPlayer(color);
     else if (strcmp(type, "randbot") == 0)
