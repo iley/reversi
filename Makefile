@@ -42,7 +42,7 @@ plgbot.cpp: bot.hpp reversi.hpp
 bot.hpp: bot.cpp
 
 bot.cpp: bot.pro
-	prolog -qs $(TRANS) -t "translate('$<')"
+	swipl -qs $(TRANS) -t "translate('$<')"
 
 clean:
 	rm -f reversi $(MODULES) bot.hpp bot.cpp
