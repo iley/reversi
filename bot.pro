@@ -34,12 +34,12 @@ best([Pos1|Rest], Level, BestPos, BestScore) :-
   best(Rest, Level, Pos2, Score2),
   select(Pos1, Score1, Pos2, Score2, BestPos, BestScore).
 
-select(Pos1, Score1, Pos2, Score2, Pos1, Score1) :-
+select(Pos1, Score1, Pos2, Score2, Pos2, Score2) :-
   min_move(Pos1), Score1 < Score2, !
 ;
   max_move(Pos2), Score1 > Score2, !.
 
-select(Pos1, Score1, Pos2, Score2, Pos2, Score2).
+select(Pos1, Score1, Pos2, Score2, Pos1, Score1).
 
 min_move(pos(_, Color, _)) :-
   not(my_color(Color)).
