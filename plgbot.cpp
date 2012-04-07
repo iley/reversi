@@ -67,21 +67,61 @@ static bool predicatePointCol(const PlgAtom &functor, const SReference &args, Pl
     return result.Unify(SReference(point->Col()), cont.Context());
 }
 
+static const int Size = 8;
+
+static int startTable[Size][Size];
+static int finalTable[Size][Size];
+
 // score(+Field,+Color,-Score)
 static bool predicateScore(const PlgAtom &functor, const SReference &args, PlgExpressionContinuation &cont)
 {
+    bool initDone = false;
+
+    if (!initDone) {
+        for (int i = 0; i < Size; ++i) {
+            for (int j = 0; j < Size; ++j) {
+                finalTable[i][j] = 1;
+
+                bool hor = (i == 0) || (i == Size-1);
+                bool ver = (j == 0) || (j == Size-1);
+
+                if (hor && ver)
+                    startTable[i][j] = 25;
+                else if (hor || ver)
+                    startTable[i][j] = 5;
+                else
+                    startTable[i][j] = 1;
+            }
+        }
+
+        initDone = true;
+    }
+
     GameField field = args.Car();
     int color = args.Cdr().Car().GetInt();
     PlgReference result = args.Cdr().Cdr().Car();
+
+    int empty = field->Score(CHIP_NONE);
+
+    int (*table)[Size][Size];
+    if (empty > 5)
+        table = &startTable;
+    else
+        table = &finalTable;
 
     int sum = 0;
     for (int i = 0; i < field->Rows(); ++i)
         for (int j = 0; j < field->Cols(); ++j) {
             int chip = field->Get(i,j);
+            int factor = 0;
+            int score = 1;
+
             if (chip == color)
-                ++sum;
+                factor = 1;
             else if (chip == OpponentColor(color))
-                --sum;
+                factor = -1;
+
+            sum += factor * (*table)[i][j];
         }
 
     return result.Unify(SReference(sum), cont.Context());
