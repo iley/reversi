@@ -10,8 +10,6 @@ public:
     PlgBot(int color);
 
     virtual void Move(const GameField &field, MoveCallback callback);
-private:
-    PlgDatabase db;
 };
 
 #endif

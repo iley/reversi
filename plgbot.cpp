@@ -131,7 +131,7 @@ PlgBot::PlgBot(int color) : Player(color)
 {
     using namespace bot;
 
-    InitDatabase(db);
+    bot::Init();
 
     correct_moves.SetPredicate(predicateCorrectMoves, 2);
     score.SetPredicate(predicateScore, 3);
@@ -147,7 +147,7 @@ void PlgBot::Move(const GameField &field, MoveCallback callback)
     using namespace PlgStdLib;
 
     PlgVariable Row("Row"), Col("Col");
-    PlgContinuation cont = db.Query( move(field, SReference(Color()), Row, Col) );
+    PlgContinuation cont = move(field, SReference(Color()), Row, Col).Query();
     debug("running query");
     bool status = cont->Next();
     assert(status);
