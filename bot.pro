@@ -52,7 +52,7 @@ good_enough(_, Alpha, Beta, Pos, Score, Pos, Score) :-
 good_enough(List, Alpha, Beta, Pos, Score, GoodPos, GoodScore) :-
   new_limits(Alpha, Beta, Pos, Score, NewAlpha, NewBeta),
   better(List, NewAlpha, NewBeta, Pos1, Score1),
-  select(Pos, Score, Pos1, Score1, GoodPos, GoodScore).
+  choose(Pos, Score, Pos1, Score1, GoodPos, GoodScore).
 
 new_limits(Alpha, Beta, Pos, Score, Score, Beta) :-
   min_move(Pos), Score > Alpha, !.
@@ -62,9 +62,9 @@ new_limits(Alpha, Beta, Pos, Score, Alpha, Score) :-
 
 new_limits(Alpha, Beta, _, _, Alpha, Beta).
 
-select(Pos, Score, Pos1, Score1, Pos, Score) :-
+choose(Pos, Score, Pos1, Score1, Pos, Score) :-
   min_move(Pos), Score > Score1, !
 ;
   max_move(Pos), Score < Score1, !.
 
-select(_, _, Pos1, Score1, Pos1, Score1).
+choose(_, _, Pos1, Score1, Pos1, Score1).
